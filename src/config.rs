@@ -47,8 +47,17 @@ impl Config {
 
     fn expand_tilde(path: &str) -> std::path::PathBuf {
         if path.starts_with("~/") {
-            if let Some(home) = env::var_os("HOME") {
-                return std::path::PathBuf::from(home).join(&path[2..]);
+            #[cfg(windows)]
+            {
+                if let Some(home) = std::env::var_os("USERPROFILE") {
+                    return std::path::PathBuf::from(home).join(&path[2..]);
+                }
+            }
+            #[cfg(not(windows))]
+            {
+                if let Some(home) = std::env::var_os("HOME") {
+                    return std::path::PathBuf::from(home).join(&path[2..]);
+                }
             }
         }
         std::path::PathBuf::from(path)
