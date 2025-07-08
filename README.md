@@ -152,6 +152,47 @@ Grand Theft Auto - San Andreas (Europe, Australia) (En,Fr,De,Es,It) (v1.03) down
 
 The application uses a `config.ini` file for configuration. You can modify these settings:
 
+### Config File Location
+
+The `config.ini` file should be placed in one of these locations (in order of priority):
+
+#### When Running from Source (Development)
+- **Current directory**: Place `config.ini` in the same folder where you run `cargo run`
+- **Example**: `/path/to/ps2-redump-downloader/config.ini`
+
+#### When Running Installed Binary (Global Installation)
+
+**Linux/macOS:**
+- **User config**: `~/.config/ps2-redump-downloader/config.ini`
+- **System-wide**: `/etc/ps2-redump-downloader/config.ini`
+- **Current directory**: `./config.ini` (where you run the binary)
+
+**Windows:**
+- **User config**: `%APPDATA%\ps2-redump-downloader\config.ini`
+  - Usually: `C:\Users\YourName\AppData\Roaming\ps2-redump-downloader\config.ini`
+- **System-wide**: `C:\ProgramData\ps2-redump-downloader\config.ini`
+- **Current directory**: `.\config.ini` (where you run the binary)
+
+#### Creating the Config Directory
+
+**Linux/macOS:**
+```bash
+mkdir -p ~/.config/ps2-redump-downloader
+cp config.ini ~/.config/ps2-redump-downloader/
+```
+
+**Windows (Command Prompt):**
+```cmd
+mkdir "%APPDATA%\ps2-redump-downloader"
+copy config.ini "%APPDATA%\ps2-redump-downloader\"
+```
+
+**Windows (PowerShell):**
+```powershell
+New-Item -ItemType Directory -Path "$env:APPDATA\ps2-redump-downloader" -Force
+Copy-Item config.ini "$env:APPDATA\ps2-redump-downloader\"
+```
+
 ### config.ini
 
 ```ini
@@ -228,6 +269,13 @@ ps2-redump-downloader/
   - Ensure you have write permissions in the current directory
   - Run as administrator on Windows if needed
 
+#### Config File Not Found
+- **Problem**: "Failed to load config" error
+- **Solution**: 
+  - Ensure `config.ini` is in the correct location (see [Configuration](#configuration))
+  - For global installations, create the config directory and copy the file
+  - Check file permissions on the config file
+
 ### Performance Tips
 
 1. **Stable internet connection** for reliable downloads
@@ -268,10 +316,6 @@ The application uses these main dependencies:
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
