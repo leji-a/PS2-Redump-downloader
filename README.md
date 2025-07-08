@@ -41,7 +41,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/ps2-redump-downloader.git
+   git clone https://github.com/leji-a/ps2-redump-downloader.git
    cd ps2-redump-downloader
    ```
 
