@@ -1,7 +1,6 @@
 use anyhow::Result;
 use configparser::ini::Ini;
 use serde::{Deserialize, Serialize};
-use std::env;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {

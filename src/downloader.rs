@@ -118,7 +118,6 @@ impl Downloader {
                             None
                         };
 
-                        let mut download_completed = false;
                         while let Some(chunk_result) = stream.next().await {
                             match chunk_result {
                                 Ok(chunk) => {
@@ -140,32 +139,26 @@ impl Downloader {
                             if let Some(length) = pb.length() {
                                 if pb.position() >= length {
                                     pb.finish_with_message("Download completed");
-                                    download_completed = true;
+                                    break;
                                 } else {
                                     pb.finish_with_message("Download incomplete");
-                                    download_completed = false;
                                 }
                             } else {
                                 // If we can't determine length, assume completed
                                 pb.finish_with_message("Download completed");
-                                download_completed = true;
+                                break;
                             }
                         } else {
-                            download_completed = true; // Assume completed if no progress bar
+                            // Assume completed if no progress bar
+                            break;
                         }
 
-                        if download_completed {
-                            break;
-                        } else {
-                            println!("Download incomplete, will retry...");
-                            // Remove the corrupted file before retrying
-                            if file_path.exists() {
-                                if let Err(e) = fs::remove_file(file_path) {
-                                    println!("Warning: Could not remove corrupted file: {}", e);
-                                }
-                            }
-                            retries += 1;
-                            continue;
+                        if retries < self.config.max_retries {
+                            println!("Waiting {} seconds before retry...", self.config.delay_between_retries);
+                            tokio::time::sleep(tokio::time::Duration::from_secs(
+                                self.config.delay_between_retries,
+                            ))
+                            .await;
                         }
                     } else {
                         println!("HTTP error: {} - {}", response.status(), response.status().as_str());
@@ -176,14 +169,6 @@ impl Downloader {
                     println!("Request error (attempt {}/{}): {}", retries + 1, self.config.max_retries, e);
                     retries += 1;
                 }
-            }
-
-            if retries < self.config.max_retries {
-                println!("Waiting {} seconds before retry...", self.config.delay_between_retries);
-                tokio::time::sleep(tokio::time::Duration::from_secs(
-                    self.config.delay_between_retries,
-                ))
-                .await;
             }
         }
 
