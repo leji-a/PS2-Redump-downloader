@@ -33,14 +33,15 @@ async fn run_main_loop(
     games: Vec<Game>,
 ) -> Result<()> {
     loop {
-        print!("Find PS2 title to download: ");
+        print!("Find PS2 title to download (leave empty to exit): ");
         std::io::stdout().flush()?;
         let mut search_input = String::new();
         std::io::stdin().read_line(&mut search_input)?;
         let search_input = search_input.trim();
 
         if search_input.is_empty() {
-            continue;
+            println!("Exiting...");
+            break Ok(());
         }
 
         let filtered_games = filter_games(&games, search_input);
