@@ -6,7 +6,6 @@ use std::path::Path;
 pub fn setup_folders(config: &Config) -> Result<()> {
     check_folder(&config.tmp_folder_path(), &config.tmp_folder_name)?;
     check_folder(&config.tmp_iso_folder_path(), &config.tmp_iso_folder_name)?;
-    check_folder(&config.tmp_key_folder_path(), &config.tmp_key_folder_name)?;
     Ok(())
 }
 

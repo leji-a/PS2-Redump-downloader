@@ -23,14 +23,12 @@ async fn main() -> Result<()> {
     let games = scraper.get_ps2_list().await?;
 
     // Main application loop
-    run_main_loop(&config, &scraper, &downloader, games).await?;
+    run_main_loop(&downloader, games).await?;
 
     Ok(())
 }
 
 async fn run_main_loop(
-    _config: &Config,
-    _scraper: &Scraper,
     downloader: &Downloader,
     games: Vec<Game>,
 ) -> Result<()> {
