@@ -230,16 +230,16 @@ ps2-redump-downloader/
 
 ### Performance Tips
 
-1. **Use SSD storage** for faster file operations
-2. **Stable internet connection** for reliable downloads
-3. **Sufficient disk space** (games are typically 1-4GB each)
-4. **Close other bandwidth-heavy applications** during downloads
+1. **Stable internet connection** for reliable downloads
+2. **Sufficient disk space** (games are typically 1-4GB each)
+3. **Close other bandwidth-heavy applications** during downloads
 
 ## Building from Source
 
 ### Development Setup
 
 1. **Install Rust** (see Prerequisites)
+
 2. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/ps2-redump-downloader.git
@@ -250,12 +250,6 @@ ps2-redump-downloader/
    ```bash
    cargo build
    ```
-
-4. **Run tests**:
-   ```bash
-   cargo test
-   ```
-
 ### Dependencies
 
 The application uses these main dependencies:
@@ -284,10 +278,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Redump** for providing the PS2 game database
 - **Rust community** for the excellent ecosystem
 - **Myrient** for hosting the game files
-
-## Disclaimer
-
-This tool is for educational and preservation purposes only. Please ensure you comply with your local laws regarding software downloads and usage. Only download games you own or have the right to access.
+- **juanpomares** for the logic
 
 ## Support
 
@@ -303,4 +294,4 @@ If you encounter issues:
 
 ---
 
-**Note**: This is a Rust port of the original Python PS2 Redump downloader, offering improved performance, better error handling, and cross-platform compatibility. 
+**Note**: This is a Rust port of the original Python [PS3 Redump downloader](https://github.com/juanpomares/PS3-Redump-downloader).
