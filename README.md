@@ -59,6 +59,20 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ./target/release/ps2-redump-downloader
    ```
 
+### Install as a global binary (recommended for easy access)
+
+You can install the downloader globally so you can run it from anywhere:
+
+```bash
+cargo install --path .
+```
+
+After installing, you can run the downloader from any directory:
+
+```bash
+ps2-redump-downloader
+```
+
 ### Cross-Platform Compilation
 
 #### For Windows (from Linux/macOS)
@@ -126,11 +140,11 @@ The application uses a `config.ini` file for configuration. You can modify these
 
 ```ini
 [url]
-# PS2 Redump sources 
+# PS2 Redump sources (no decryption needed)
 ISO = https://myrient.erista.me/files/Redump/Sony%20-%20PlayStation%202/
 
 [Download]
-# Downloaded Game list 
+# Downloaded Game list fileName 
 LIST_FILES_JSON_NAME = listPS2Titles.json 
 
 # Download ISO file using navigator (0 = use built-in downloader, 1 = open browser)
@@ -198,11 +212,14 @@ ps2-redump-downloader/
 
 ### Performance Tips
 
-1. **Stable internet connection** for reliable downloads
-2. **Sufficient disk space** (games are typically 1-4GB each)
-3. **Close other bandwidth-heavy applications** during downloads
+1. **Use SSD storage** for faster file operations
+2. **Stable internet connection** for reliable downloads
+3. **Sufficient disk space** (games are typically 1-4GB each)
+4. **Close other bandwidth-heavy applications** during downloads
 
 ## Building from Source
+
+### Development Setup
 
 1. **Install Rust** (see Prerequisites)
 2. **Clone the repository**:
@@ -216,6 +233,11 @@ ps2-redump-downloader/
    cargo build
    ```
 
+4. **Run tests**:
+   ```bash
+   cargo test
+   ```
+
 ### Dependencies
 
 The application uses these main dependencies:
@@ -227,6 +249,14 @@ The application uses these main dependencies:
 - `zip` - ZIP file extraction
 - `configparser` - Configuration file parsing
 
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -236,7 +266,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Redump** for providing the PS2 game database
 - **Rust community** for the excellent ecosystem
 - **Myrient** for hosting the game files
-- **juanpomares** for the logic
+
+## Disclaimer
+
+This tool is for educational and preservation purposes only. Please ensure you comply with your local laws regarding software downloads and usage. Only download games you own or have the right to access.
 
 ## Support
 
@@ -252,4 +285,4 @@ If you encounter issues:
 
 ---
 
-**Note**: This is a Rust port of the original Python [PS3 Redump downloader](https://github.com/juanpomares/PS3-Redump-downloader).
+**Note**: This is a Rust port of the original Python PS2 Redump downloader, offering improved performance, better error handling, and cross-platform compatibility. 
