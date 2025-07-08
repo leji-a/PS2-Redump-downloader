@@ -160,7 +160,7 @@ The application uses a `config.ini` file for configuration. You can modify these
 ISO = https://myrient.erista.me/files/Redump/Sony%20-%20PlayStation%202/
 
 [Download]
-# Downloaded Game list fileName 
+# Downloaded Game list 
 LIST_FILES_JSON_NAME = listPS2Titles.json 
 
 # Download ISO file using navigator (0 = use built-in downloader, 1 = open browser)
@@ -242,7 +242,7 @@ ps2-redump-downloader/
 
 2. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/ps2-redump-downloader.git
+   git clone https://github.com/leji-a/ps2-redump-downloader.git
    cd ps2-redump-downloader
    ```
 
@@ -276,7 +276,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - **Redump** for providing the PS2 game database
-- **Rust community** for the excellent ecosystem
 - **Myrient** for hosting the game files
 - **juanpomares** for the logic
 
@@ -285,7 +284,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you encounter issues:
 
 1. Check the [Troubleshooting](#troubleshooting) section
-2. Search existing [Issues](https://github.com/yourusername/ps2-redump-downloader/issues)
+2. Search existing [Issues](https://github.com/leji-a/ps2-redump-downloader/issues)
 3. Create a new issue with:
    - Your operating system
    - Rust version (`rustc --version`)
