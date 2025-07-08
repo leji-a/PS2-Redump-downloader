@@ -106,7 +106,23 @@ cargo build --release --target x86_64-apple-darwin
 4. **Monitor progress**:
    - Download progress is shown with a progress bar
    - Extraction progress is shown during ZIP extraction
-   - Files are automatically saved to the `tmp/iso_files/` directory
+   - Files are automatically saved to the configured download directory
+
+## Download Location
+
+Games are downloaded to the following location:
+
+- **Default location**: `~/PS2-Games/iso_files/`
+  - Linux/macOS: `/home/username/PS2-Games/iso_files/`
+  - Windows: `C:\Users\username\PS2-Games\iso_files\`
+
+- **When running from source**: `./tmp/iso_files/` (relative to where you run the command)
+
+You can change the download location by modifying the `TMP_FOLDER_NAME` setting in `config.ini`:
+- `~/Downloads/PS2-Games` - Downloads folder
+- `~/Documents/PS2-Games` - Documents folder
+- `/path/to/custom/location` - Custom absolute path
+- `./tmp` - Relative to current directory
 
 ### Example Session
 
@@ -156,7 +172,7 @@ DELAY_BETWEEN_RETRIES = 10
 TIMEOUT_REQUEST = 600
 
 [folder]
-TMP_FOLDER_NAME = tmp
+TMP_FOLDER_NAME = ~/PS2-Games
 TMP_ISO_FOLDER_NAME = iso_files
 ```
 
@@ -169,7 +185,7 @@ TMP_ISO_FOLDER_NAME = iso_files
 | `MAX_RETRIES` | Number of retry attempts for failed downloads | 10 |
 | `DELAY_BETWEEN_RETRIES` | Seconds to wait between retries | 10 |
 | `TIMEOUT_REQUEST` | Request timeout in seconds | 600 (10 minutes) |
-| `TMP_FOLDER_NAME` | Temporary folder name | tmp |
+| `TMP_FOLDER_NAME` | Temporary folder name | ~/PS2-Games |
 | `TMP_ISO_FOLDER_NAME` | ISO files folder name | iso_files |
 
 ## File Structure
@@ -177,12 +193,14 @@ TMP_ISO_FOLDER_NAME = iso_files
 ```
 ps2-redump-downloader/
 ├── src/                    # Source code
-├── tmp/                    # Temporary files (created automatically)
-│   ├── iso_files/         # Downloaded ISO files
-│   └── listPS2Titles.json # Cached game list
 ├── config.ini             # Configuration file
 ├── Cargo.toml            # Rust dependencies
 └── README.md             # This file
+
+# Downloaded files (created automatically)
+~/PS2-Games/
+├── iso_files/             # Downloaded ISO files
+└── listPS2Titles.json    # Cached game list
 ```
 
 ## Troubleshooting

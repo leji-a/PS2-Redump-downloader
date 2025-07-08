@@ -1,6 +1,7 @@
 use anyhow::Result;
 use configparser::ini::Ini;
 use serde::{Deserialize, Serialize};
+use std::env;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
@@ -44,8 +45,17 @@ impl Config {
         Ok(config)
     }
 
+    fn expand_tilde(path: &str) -> std::path::PathBuf {
+        if path.starts_with("~/") {
+            if let Some(home) = env::var_os("HOME") {
+                return std::path::PathBuf::from(home).join(&path[2..]);
+            }
+        }
+        std::path::PathBuf::from(path)
+    }
+
     pub fn tmp_folder_path(&self) -> std::path::PathBuf {
-        std::path::PathBuf::from(&self.tmp_folder_name)
+        Self::expand_tilde(&self.tmp_folder_name)
     }
 
     pub fn tmp_iso_folder_path(&self) -> std::path::PathBuf {
