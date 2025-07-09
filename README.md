@@ -281,12 +281,6 @@ ps2-redump-downloader/
    ```bash
    cargo build
    ```
-
-4. **Run tests**:
-   ```bash
-   cargo test
-   ```
-
 ### Dependencies
 
 The application uses these main dependencies:
@@ -309,9 +303,8 @@ The application uses these main dependencies:
 ## Acknowledgments
 
 - **Redump** for providing the PS2 game database
-- **Rust community** for the excellent ecosystem
 - **Myrient** for hosting the game files
-
+- **juanpomares** for the original code in Python
 ## Disclaimer
 
 This tool is for educational and preservation purposes only. Please ensure you comply with your local laws regarding software downloads and usage. Only download games you own or have the right to access.
@@ -330,4 +323,4 @@ If you encounter issues:
 
 ---
 
-**Note**: This is a Rust port of the original Python PS2 Redump downloader, offering improved performance, better error handling, and cross-platform compatibility.
+**Note**: This is a Rust port of the original Python [PS3 Redump downloader](https://github.com/juanpomares/PS3-Redump-downloader).
