@@ -2,6 +2,17 @@
 
 A fast and efficient Rust application for downloading PlayStation 2 games from Redump databases. This tool provides a command-line interface to search, download, and extract PS2 ISO files with progress indicators and resume capability.
 
+## Table of Contents
+
+1. [Features](#features)
+2. [Prerequisites](#prerequisites)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Configuration](#configuration)
+6. [Troubleshooting](#troubleshooting)
+7. [Building from Source](#building-from-source)
+8. [Contributing](#contributing)
+
 ## Features
 
 - 🔍 **Search & Filter**: Search PS2 games by title with real-time filtering
@@ -20,17 +31,12 @@ A fast and efficient Rust application for downloading PlayStation 2 games from R
 
 ### Installing Rust
 
-#### Windows
+**Windows:**
 1. Download the Rust installer from [https://rustup.rs/](https://rustup.rs/)
 2. Run the installer and follow the prompts
 3. Restart your terminal/command prompt
 
-#### macOS
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-#### Linux
+**macOS/Linux:**
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
@@ -39,18 +45,14 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 ### From Source (Recommended)
 
-1. **Clone the repository**:
+1. **Clone and build**:
    ```bash
    git clone https://github.com/leji-a/ps2-redump-downloader.git
    cd ps2-redump-downloader
-   ```
-
-2. **Build the application**:
-   ```bash
    cargo build --release
    ```
 
-3. **Run the application**:
+2. **Run the application**:
    ```bash
    # Development
    cargo run
@@ -59,28 +61,24 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ./target/release/ps2-redump-downloader
    ```
 
-### Install as a global binary (recommended for easy access)
+### Global Installation
 
-You can install the downloader globally so you can run it from anywhere:
+Install globally for easy access from anywhere:
 
 ```bash
 cargo install --path .
-```
-
-After installing, you can run the downloader from any directory:
-
-```bash
 ps2-redump-downloader
 ```
 
 ### Cross-Platform Compilation
 
-#### For Windows (from Linux/macOS)
+**For Windows (from Linux/macOS):**
 ```bash
+rustup target add x86_64-pc-windows-gnu
 cargo build --release --target x86_64-pc-windows-gnu
 ```
 
-#### For macOS (from Linux)
+**For macOS (from Linux):**
 ```bash
 cargo build --release --target x86_64-apple-darwin
 ```
@@ -108,7 +106,7 @@ cargo build --release --target x86_64-apple-darwin
    - Extraction progress is shown during ZIP extraction
    - Files are automatically saved to the configured download directory
 
-## Download Location
+### Download Location
 
 Games are downloaded to the following location:
 
@@ -129,7 +127,7 @@ You can change the download location by modifying the `TMP_FOLDER_NAME` setting 
 ```
 PS2 Redump Downloader
 
-Find PS2 title to download: gta
+Find PS2 title to download (leave empty to exit): gta
 1. Grand Theft Auto - San Andreas (Europe, Australia) (En,Fr,De,Es,It) (v1.03) (2.91 GiB)
 2. Grand Theft Auto - Vice City (Europe) (En,Fr,De,Es,It) (v1.40) (1.85 GiB)
 3. Grand Theft Auto III (Europe) (En,Fr,De,Es,It) (v1.40) (1.85 GiB)
@@ -139,7 +137,6 @@ Enter PS2 title number [1-3]: 1
 Selected Grand Theft Auto - San Andreas (Europe, Australia) (En,Fr,De,Es,It) (v1.03)
 
  # ISO file...
-Attempting download from: https://myrient.erista.me/files/Redump/Sony%20-%20PlayStation%202/Grand%20Theft%20Auto%20-%20San%20Andreas%20%28Europe%2C%20Australia%29%20%28En%2CFr%2CDe%2CEs%2CIt%29%20%28v1.03%29.zip
 ⠲ [00:04:58] [##########################>-------------] 1.92 GiB/2.91 GiB (3m)
 
 Extracting ZIP file...
@@ -150,7 +147,7 @@ Grand Theft Auto - San Andreas (Europe, Australia) (En,Fr,De,Es,It) (v1.03) down
 
 ## Configuration
 
-The application uses a `config.ini` file for configuration. You can modify these settings:
+The application uses a `config.ini` file for configuration.
 
 ### Config File Location
 
@@ -158,7 +155,6 @@ The `config.ini` file should be placed in one of these locations (in order of pr
 
 #### When Running from Source (Development)
 - **Current directory**: Place `config.ini` in the same folder where you run `cargo run`
-- **Example**: `/path/to/ps2-redump-downloader/config.ini`
 
 #### When Running Installed Binary (Global Installation)
 
@@ -187,12 +183,6 @@ mkdir "%APPDATA%\ps2-redump-downloader"
 copy config.ini "%APPDATA%\ps2-redump-downloader\"
 ```
 
-**Windows (PowerShell):**
-```powershell
-New-Item -ItemType Directory -Path "$env:APPDATA\ps2-redump-downloader" -Force
-Copy-Item config.ini "$env:APPDATA\ps2-redump-downloader\"
-```
-
 ### config.ini
 
 ```ini
@@ -201,7 +191,7 @@ Copy-Item config.ini "$env:APPDATA\ps2-redump-downloader\"
 ISO = https://myrient.erista.me/files/Redump/Sony%20-%20PlayStation%202/
 
 [Download]
-# Downloaded Game list 
+# Downloaded Game list fileName 
 LIST_FILES_JSON_NAME = listPS2Titles.json 
 
 # Download ISO file using navigator (0 = use built-in downloader, 1 = open browser)
@@ -276,18 +266,11 @@ ps2-redump-downloader/
   - For global installations, create the config directory and copy the file
   - Check file permissions on the config file
 
-### Performance Tips
-
-1. **Stable internet connection** for reliable downloads
-2. **Sufficient disk space** (games are typically 1-4GB each)
-3. **Close other bandwidth-heavy applications** during downloads
-
 ## Building from Source
 
 ### Development Setup
 
 1. **Install Rust** (see Prerequisites)
-
 2. **Clone the repository**:
    ```bash
    git clone https://github.com/leji-a/ps2-redump-downloader.git
@@ -298,6 +281,12 @@ ps2-redump-downloader/
    ```bash
    cargo build
    ```
+
+4. **Run tests**:
+   ```bash
+   cargo test
+   ```
+
 ### Dependencies
 
 The application uses these main dependencies:
@@ -320,15 +309,19 @@ The application uses these main dependencies:
 ## Acknowledgments
 
 - **Redump** for providing the PS2 game database
+- **Rust community** for the excellent ecosystem
 - **Myrient** for hosting the game files
-- **juanpomares** for the logic
+
+## Disclaimer
+
+This tool is for educational and preservation purposes only. Please ensure you comply with your local laws regarding software downloads and usage. Only download games you own or have the right to access.
 
 ## Support
 
 If you encounter issues:
 
 1. Check the [Troubleshooting](#troubleshooting) section
-2. Search existing [Issues](https://github.com/leji-a/ps2-redump-downloader/issues)
+2. Search existing [Issues](https://github.com/yourusername/ps2-redump-downloader/issues)
 3. Create a new issue with:
    - Your operating system
    - Rust version (`rustc --version`)
@@ -337,4 +330,4 @@ If you encounter issues:
 
 ---
 
-**Note**: This is a Rust port of the original Python [PS3 Redump downloader](https://github.com/juanpomares/PS3-Redump-downloader).
+**Note**: This is a Rust port of the original Python PS2 Redump downloader, offering improved performance, better error handling, and cross-platform compatibility.
