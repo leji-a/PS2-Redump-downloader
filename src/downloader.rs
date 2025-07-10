@@ -4,7 +4,7 @@ use futures_util::StreamExt;
 use indicatif::{ProgressBar, ProgressStyle};
 use std::fs;
 use std::path::Path;
-use tokio::fs::File;
+use std::io::{Read, Write};
 use tokio::fs::OpenOptions;
 use tokio::io::{AsyncSeekExt, SeekFrom, AsyncWriteExt};
 use zip::ZipArchive;
@@ -314,7 +314,7 @@ impl Downloader {
                 ProgressStyle::default_bar()
                     .template("{spinner:.green} Extracting: [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})")
                     .unwrap()
-                    .progress_chars("#>-"),
+                    .progress_chars("#>-")
             );
 
             for i in 0..archive.len() {
@@ -330,8 +330,15 @@ impl Downloader {
                         }
                     }
                     let mut outfile = fs::File::create(&outpath)?;
-                    std::io::copy(&mut file, &mut outfile)?;
-                    progress_bar.inc(file.size());
+                    let mut buffer = [0u8; 8192];
+                    loop {
+                        let bytes_read = file.read(&mut buffer)?;
+                        if bytes_read == 0 {
+                            break;
+                        }
+                        outfile.write_all(&buffer[..bytes_read])?;
+                        progress_bar.inc(bytes_read as u64);
+                    }
                 }
             }
 
@@ -359,7 +366,14 @@ impl Downloader {
                         }
                     }
                     let mut outfile = fs::File::create(&outpath)?;
-                    std::io::copy(&mut file, &mut outfile)?;
+                    let mut buffer = [0u8; 8192];
+                    loop {
+                        let bytes_read = file.read(&mut buffer)?;
+                        if bytes_read == 0 {
+                            break;
+                        }
+                        outfile.write_all(&buffer[..bytes_read])?;
+                    }
                 }
                 spinner.tick();
             }

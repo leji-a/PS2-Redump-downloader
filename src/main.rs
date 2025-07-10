@@ -2,8 +2,8 @@ use anyhow::Result;
 use ps2_redump_downloader::{
     config::Config, downloader::Downloader, models::Game, scraper::Scraper, utils::setup_folders,
 };
+use tokio::io::{self, AsyncBufReadExt, BufReader};
 use std::io::Write;
-use tokio::io::{self, AsyncBufReadExt, AsyncWriteExt, BufReader};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -40,7 +40,7 @@ async fn run_main_loop(
     let mut input = String::new();
     loop {
         print!("Find PS2 title to download (leave empty to exit): ");
-        io::stdout().flush().await?;
+        std::io::stdout().flush()?;
         input.clear();
         reader.read_line(&mut input).await?;
         let search_input = input.trim();
@@ -60,7 +60,7 @@ async fn run_main_loop(
         print_games(&filtered_games);
 
         print!("Enter PS2 title number [1-{}]: ", filtered_games.len());
-        io::stdout().flush().await?;
+        std::io::stdout().flush()?;
         input.clear();
         reader.read_line(&mut input).await?;
 
