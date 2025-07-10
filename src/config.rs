@@ -51,6 +51,14 @@ impl Config {
             tmp_iso_folder_name,
         };
 
+        // Validate configuration
+        if config.max_retries == 0 {
+            anyhow::bail!("MAX_RETRIES must be greater than 0");
+        }
+        if config.delay_between_retries == 0 {
+            anyhow::bail!("DELAY_BETWEEN_RETRIES must be greater than 0");
+        }
+
         Ok(config)
     }
 

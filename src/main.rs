@@ -89,6 +89,7 @@ fn filter_games<'a>(games: &'a [Game], search: &str) -> Vec<&'a Game> {
         .collect()
 }
 
+/// Displays the list of filtered games with their titles and sizes.
 fn print_games(games: &[&Game]) {
     for (index, game) in games.iter().enumerate() {
         println!("{}. {} ({})", index + 1, game.title, game.size);

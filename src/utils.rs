@@ -22,11 +22,6 @@ fn check_folder(folder_path: &Path, folder_name: &str) -> Result<()> {
 
 /// Creates a folder and handles errors appropriately.
 fn create_folder(folder_path: &Path, folder_name: &str) -> Result<()> {
-    match fs::create_dir_all(folder_path) {
-        Ok(_) => Ok(()),
-        Err(e) => {
-            eprintln!("Error creating '{}' folder: {}", folder_name, e);
-            std::process::exit(-1);
-        }
-    }
+    fs::create_dir_all(folder_path)
+        .map_err(|e| anyhow::anyhow!("Error creating '{}' folder: {}", folder_name, e))
 }
