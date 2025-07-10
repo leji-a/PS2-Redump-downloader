@@ -5,20 +5,24 @@ use indicatif::{ProgressBar, ProgressStyle};
 use std::fs;
 use std::path::Path;
 use tokio::fs::File;
-use tokio::io::AsyncWriteExt;
+use tokio::fs::OpenOptions;
+use tokio::io::{AsyncSeekExt, SeekFrom, AsyncWriteExt};
 use zip::ZipArchive;
 
+/// Downloader handles downloading and extracting PS2 ISO files.
 pub struct Downloader {
     config: Config,
 }
 
 impl Downloader {
+    /// Create a new Downloader with the given configuration.
     pub fn new(config: &Config) -> Self {
         Self {
             config: config.clone(),
         }
     }
 
+    /// Download and extract the selected PS2 game.
     pub async fn download_ps2_element(&self, game: &Game) -> Result<()> {
         let title = game.clean_title();
         println!("\nSelected {}\n", title);
@@ -40,12 +44,14 @@ impl Downloader {
         Ok(())
     }
 
+    /// Download and unzip the file, handling both direct and external download methods.
     async fn download_and_unzip(&self, link: &str, title: &str) -> Result<()> {
         println!(" # ISO file...");
 
         let unzipped_file_name = format!("{}.iso", title);
         let unzipped_file_path = self.config.tmp_iso_folder_path().join(&unzipped_file_name);
 
+        // Skip download if file already exists
         if unzipped_file_path.exists() {
             println!(" - File previously downloaded :)\n");
             return Ok(());
@@ -61,6 +67,7 @@ impl Downloader {
             self.download_using_request(link, &tmp_file).await?;
         }
 
+        // Unzip and clean up
         if tmp_file.exists() {
             self.unzip_file(&tmp_file).await?;
             self.remove_file(&tmp_file)?;
@@ -70,6 +77,8 @@ impl Downloader {
         Ok(())
     }
 
+    /// Downloads a file using reqwest, supporting resume and progress bar.
+    /// Retries on failure up to max_retries.
     async fn download_using_request(&self, link: &str, file_path: &Path) -> Result<()> {
         let total_size = self.get_file_size(link).await?;
         let mut retries = 0;
@@ -82,11 +91,11 @@ impl Downloader {
                 if file_path.exists() {
                     first_byte = fs::metadata(file_path)?.len();
                     if first_byte >= size {
-                        println!("The file {} is downloaded previously.", file_path.display());
+                        println!("The file {} was downloaded previously.", file_path.display());
                         return Ok(());
                     }
                 }
-                headers.insert("Range", format!("bytes={}-{}", first_byte, size).parse()?);
+                headers.insert("Range", format!("bytes={}-{}", first_byte, size - 1).parse()?);
             }
 
             let client = reqwest::Client::builder()
@@ -97,11 +106,18 @@ impl Downloader {
                 .build()?;
 
             println!("Attempting download from: {}", link);
-            
+
             match client.get(link).headers(headers).send().await {
                 Ok(response) => {
                     if response.status().is_success() {
-                        let mut file = File::create(file_path).await?;
+                        // Open file for append and seek to the correct position
+                        let mut file = OpenOptions::new()
+                            .create(true)
+                            .append(false)
+                            .write(true)
+                            .open(file_path)
+                            .await?;
+                        file.seek(SeekFrom::Start(first_byte)).await?;
                         let mut stream = response.bytes_stream();
 
                         let progress_bar = if let Some(total) = total_size {
@@ -110,7 +126,7 @@ impl Downloader {
                                 ProgressStyle::default_bar()
                                     .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})")
                                     .unwrap()
-                                    .progress_chars("#>-"),
+                                    .progress_chars("#>-")
                             );
                             pb.set_position(first_byte);
                             Some(pb)
@@ -118,20 +134,35 @@ impl Downloader {
                             None
                         };
 
+                        let mut downloaded = first_byte;
+                        let mut error_occurred = false;
                         while let Some(chunk_result) = stream.next().await {
                             match chunk_result {
                                 Ok(chunk) => {
                                     file.write_all(&chunk).await?;
+                                    downloaded += chunk.len() as u64;
                                     if let Some(pb) = &progress_bar {
-                                        pb.inc(chunk.len() as u64);
+                                        pb.set_position(downloaded);
                                     }
                                 }
                                 Err(e) => {
                                     println!("Error during download: {}", e);
-                                    // Don't break, let it retry
+                                    error_occurred = true;
                                     break;
                                 }
                             }
+                        }
+
+                        if error_occurred {
+                            retries += 1;
+                            if retries < self.config.max_retries {
+                                println!("Waiting {} seconds before retry...", self.config.delay_between_retries);
+                                tokio::time::sleep(tokio::time::Duration::from_secs(
+                                    self.config.delay_between_retries,
+                                ))
+                                .await;
+                            }
+                            continue;
                         }
 
                         // Check if download was completed successfully
@@ -144,21 +175,11 @@ impl Downloader {
                                     pb.finish_with_message("Download incomplete");
                                 }
                             } else {
-                                // If we can't determine length, assume completed
                                 pb.finish_with_message("Download completed");
                                 break;
                             }
                         } else {
-                            // Assume completed if no progress bar
                             break;
-                        }
-
-                        if retries < self.config.max_retries {
-                            println!("Waiting {} seconds before retry...", self.config.delay_between_retries);
-                            tokio::time::sleep(tokio::time::Duration::from_secs(
-                                self.config.delay_between_retries,
-                            ))
-                            .await;
                         }
                     } else {
                         println!("HTTP error: {} - {}", response.status(), response.status().as_str());
@@ -182,6 +203,7 @@ impl Downloader {
         Ok(())
     }
 
+    /// Prompts the user to download the file manually using a browser.
     async fn download_using_navigator(
         &self,
         route: &str,
@@ -208,6 +230,7 @@ impl Downloader {
         let mut input = String::new();
         std::io::stdin().read_line(&mut input)?;
 
+        // Wait until the file is present
         while !zip_file.exists() && !destination_folder.join(unzipped_file).exists() {
             println!(
                 "\nFile not found!! Make sure to download and copy the file to '{}'",
@@ -221,6 +244,7 @@ impl Downloader {
         Ok(())
     }
 
+    /// Gets the file size from the server using a range request or content-length.
     async fn get_file_size(&self, link: &str) -> Result<Option<u64>> {
         let client = reqwest::Client::builder()
             .timeout(std::time::Duration::from_secs(30))
@@ -251,6 +275,7 @@ impl Downloader {
         Ok(None)
     }
 
+    /// Unzips the downloaded file, showing a progress bar if possible.
     async fn unzip_file(&self, zip_path: &Path) -> Result<()> {
         println!("Extracting ZIP file...");
         let dest = zip_path.parent().unwrap();
@@ -345,6 +370,7 @@ impl Downloader {
         Ok(())
     }
 
+    /// Removes a file, printing an error if it fails.
     fn remove_file(&self, file_path: &Path) -> Result<()> {
         match fs::remove_file(file_path) {
             Ok(_) => Ok(()),
@@ -355,6 +381,7 @@ impl Downloader {
         }
     }
 
+    /// Opens the file explorer at the given path.
     fn open_explorer(&self, path: &Path) {
         if let Err(e) = open::that(path) {
             println!("Error opening {}: {}", path.display(), e);
