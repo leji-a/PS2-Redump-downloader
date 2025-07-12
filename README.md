@@ -36,14 +36,14 @@ A fast and efficient Rust application for downloading PlayStation 2 games from R
 2. Run the installer and follow the prompts
 3. Restart your terminal/command prompt
 
-**macOS/Linux:**
+**Linux/macOS:**
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 ## Installation
 
-### From Source (Recommended)
+### From Source
 
 1. **Clone and build**:
    ```bash
@@ -93,7 +93,7 @@ cargo build --release --target x86_64-apple-darwin
    ```
 
 2. **Search for games**:
-   - Type part of the game title (e.g., "gta", "final fantasy")
+   - Type part of the game title
    - Press Enter to search
    - The search is case-insensitive and supports partial matches
 
@@ -114,13 +114,10 @@ Games are downloaded to the following location:
   - Linux/macOS: `/home/username/PS2-Games/iso_files/`
   - Windows: `C:\Users\username\PS2-Games\iso_files\`
 
-- **When running from source**: `./tmp/iso_files/` (relative to where you run the command)
-
 You can change the download location by modifying the `TMP_FOLDER_NAME` setting in `config.ini`:
 - `~/Downloads/PS2-Games` - Downloads folder
 - `~/Documents/PS2-Games` - Documents folder
 - `/path/to/custom/location` - Custom absolute path
-- `./tmp` - Relative to current directory
 
 ### Example Session
 
@@ -206,6 +203,7 @@ TIMEOUT_REQUEST = 600
 TMP_FOLDER_NAME = ~/PS2-Games
 TMP_ISO_FOLDER_NAME = iso_files
 ```
+> You can leave 'TMP_ISO_FOLDER_NAME' empty in case you want the iso files in 'TMP_FOLDER_NAME'
 
 ### Configuration Options
 

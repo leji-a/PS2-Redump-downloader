@@ -106,7 +106,7 @@ impl Downloader {
                 .build()?;
 
             println!("Attempting download from: {}", link);
-
+            
             match client.get(link).headers(headers).send().await {
                 Ok(response) => {
                     if response.status().is_success() {
