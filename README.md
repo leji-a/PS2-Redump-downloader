@@ -41,3 +41,15 @@ TMP_FOLDER_NAME = ~/PS2-Games
 TMP_ISO_FOLDER_NAME = iso_files
 ```
 > You can leave 'TMP_ISO_FOLDER_NAME' empty in case you want the isos in 'TMP_FOLDER_NAME'
+
+## Config File Location
+
+The application looks for `config.ini` in these locations (in order):
+
+- **Current directory:** Where you run the binary or `cargo run` (recommended for development)
+- **Linux/macOS:**
+  - `~/.config/ps2-redump-downloader/config.ini`
+  - `/etc/ps2-redump-downloader/config.ini`
+- **Windows:**
+  - `%APPDATA%\ps2-redump-downloader\config.ini`
+  - `C:\ProgramData\ps2-redump-downloader\config.ini`
