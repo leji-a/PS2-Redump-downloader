@@ -64,7 +64,7 @@ impl Config {
 
     /// Loads configuration from the recommended locations, or creates a default config if not found.
     pub fn load_or_create() -> Result<(Self, std::path::PathBuf)> {
-        use std::path::{Path, PathBuf};
+        use std::path::PathBuf;
         use std::fs;
         use std::io::Write;
 
